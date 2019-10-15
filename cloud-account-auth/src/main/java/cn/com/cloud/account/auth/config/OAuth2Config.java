@@ -1,6 +1,5 @@
-package cn.com.cloud.account.sso.config;
+package cn.com.cloud.account.auth.config;
 
-import cn.com.cloud.account.sso.handler.CustomUserApprovalHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,11 +17,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.approval.ApprovalStore;
-import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -35,7 +31,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  */
 @Configuration
 public class OAuth2Config {
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -77,12 +72,6 @@ public class OAuth2Config {
         @Autowired(required = false)
         private WebResponseExceptionTranslator<OAuth2Exception> exceptionTranslator;
 
-        @Autowired
-        private AccessDeniedHandler accessDeniedHandler;
-
-        @Autowired
-        private UserApprovalHandler userApprovalHandler;
-
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 //            if (Objects.isNull(clientDetailsService)) {
@@ -111,7 +100,6 @@ public class OAuth2Config {
                      * password 模式时需要
                      */
                     .authenticationManager(authenticationManager)
-                    .userApprovalHandler(userApprovalHandler)
                     .tokenStore(tokenStore)
                     .tokenGranter(tokenGranter)
                     .tokenServices(tokenServices())
@@ -121,7 +109,7 @@ public class OAuth2Config {
         @Override
         public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
             security
-                    .accessDeniedHandler(accessDeniedHandler)
+//                    .accessDeniedHandler(accessDeniedHandler)
 //                    .authenticationEntryPoint((request, response, authException) -> {
 //                        System.out.println("==========authException =====" + authException);
 //                        response.sendRedirect("/u/login?return_to=" + request.getServletPath());
@@ -142,35 +130,4 @@ public class OAuth2Config {
 
 
     }
-
-    @Configuration
-    protected static class Stuff {
-
-        @Autowired
-        private ClientDetailsService clientDetailsService;
-
-        @Autowired
-        private TokenStore tokenStore;
-
-        @Bean
-        public ApprovalStore approvalStore() throws Exception {
-            TokenApprovalStore store = new TokenApprovalStore();
-            store.setTokenStore(tokenStore);
-            return store;
-        }
-
-        @Bean
-        @Lazy
-        @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-        public CustomUserApprovalHandler userApprovalHandler() throws Exception {
-            CustomUserApprovalHandler handler = new CustomUserApprovalHandler();
-            handler.setApprovalStore(approvalStore());
-            handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
-            handler.setClientDetailsService(clientDetailsService);
-            handler.setUseApprovalStore(true);
-            return handler;
-        }
-    }
-
-
 }

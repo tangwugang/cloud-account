@@ -3,9 +3,7 @@ server:
     whitelabel:
       enabled: false
   port: 8082
-  servlet:
-    session:
-      timeout: 30
+
 spring:
   thymeleaf:
     cache: false  #开发环境缓存关闭
@@ -13,7 +11,7 @@ spring:
     host: 127.0.0.1
     password: twg1234
     prefix: account
-    database: 15
+    database: 14
     timeout: 6000
     port: 6379
   session:
