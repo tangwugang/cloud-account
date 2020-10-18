@@ -25,7 +25,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
@@ -50,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/u/login").permitAll()
+                .antMatchers("/","/oauth/**","/u/login").permitAll()
                 .anyRequest().hasRole("USER") //url 访问是否拥有user角色
                 .anyRequest().authenticated()
                 .and()
@@ -79,9 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login")
                 .failureUrl("/u/login?error=authentication_error")
                 .successForwardUrl("/home")
-                .loginPage("/u/login").and()
+                .loginPage("/u/login").and();
                 //添加第三方登录入口
-                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+//                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+        ;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.debug(true).ignoring().antMatchers("/style/**", "/layui/**", "/webjars/**", "/images/**", "/oauth/uncache_approvals", "/oauth/cache_approvals");
+        web.debug(true).ignoring().antMatchers("/style/**","/favicon**", "/layui/**", "/webjars/**", "/images/**", "/oauth/uncache_approvals", "/oauth/cache_approvals");
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Configuration
 //    @EnableResourceServer
-    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+    public static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             // @formatter:off

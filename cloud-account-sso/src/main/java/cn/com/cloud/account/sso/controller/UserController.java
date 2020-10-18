@@ -1,7 +1,6 @@
 package cn.com.cloud.account.sso.controller;
 
-import cn.com.cloud.account.sso.model.User;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -13,8 +12,8 @@ import java.security.Principal;
 @RestController
 public class UserController {
 
-    @GetMapping("/me")
-    public User getCurrentUser(Principal principal){
-        return new User(principal.getName());
+    @PostMapping("/me")
+    public String getCurrentUser(Principal principal){
+        return principal.getName();
     }
 }

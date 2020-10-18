@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","/favicon.ico", "/u/login").permitAll()
+                .antMatchers("/","/favicon.ico", "/u/login","/oauth/**").permitAll()
                 .anyRequest().hasRole("USER") //url 访问是否拥有user角色
                 .anyRequest().authenticated()
                 .and()
@@ -58,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
+                .successForwardUrl("/u/home")
                 .failureUrl("/u/login?error=authentication_error")
                 .loginPage("/u/login");
     }
@@ -74,8 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     @Bean("authenticationManager")
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
 

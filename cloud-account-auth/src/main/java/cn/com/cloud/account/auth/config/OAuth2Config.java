@@ -1,7 +1,8 @@
 package cn.com.cloud.account.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,19 +18,17 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
-import org.springframework.security.web.access.AccessDeniedHandler;
 
 /**
  * @author twg
  * @since 2019/7/4
  */
-@Configuration
+//@Configuration
 public class OAuth2Config {
 
     @Bean
@@ -115,8 +114,8 @@ public class OAuth2Config {
 //                        response.sendRedirect("/u/login?return_to=" + request.getServletPath());
 //                    })
 //                    .realm("oauth/demo")
-                    .passwordEncoder(passwordEncoder())
-                    .allowFormAuthenticationForClients();
+//                    .allowFormAuthenticationForClients()
+                    .passwordEncoder(passwordEncoder());
 
         }
 
